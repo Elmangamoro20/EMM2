@@ -5,32 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>emm2.www</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
         #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
-        .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px 40px 20px; }
-        @media (min-width: 601px) { .grid-catalogo { grid-template-columns: repeat(3, 1fr); } }
+        .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; }
         .item img { width: 100%; height: 100%; object-fit: cover; }
-        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-size: 1rem; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; pointer-events: none; }
-        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px; border: 1px solid #fff; }
         
-        #detalle { display: none; position: relative; }
-        .slider-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        .slider-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        /* El slider igual al primero que te funcionó */
+        .tiktok-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+        .tiktok-slider { display: flex; width: 300vw; height: 100vh; transition: transform 0.4s ease-out; }
+        .slider-item { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .slider-item img { width: 100%; height: 100%; object-fit: contain; }
         
-        /* Zonas de control: Izquierda y Derecha */
-        .control-zone { position: absolute; top: 0; width: 40%; height: 100%; z-index: 500; cursor: pointer; }
-        #left-zone { left: 0; }
-        #right-zone { right: 0; }
+        /* Zonas de control invisibles sobre el slider */
+        .click-zone { position: absolute; top: 0; width: 50%; height: 100%; z-index: 50; cursor: pointer; }
+        #click-left { left: 0; }
+        #click-right { right: 0; }
         
-        .dots { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 600; pointer-events: none; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); }
-        .dot.active { background: #fff; }
+        .volver { position: absolute; top: 20px; left: 20px; z-index: 100; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; }
     </style>
 </head>
 <body>
@@ -42,65 +39,57 @@
     <section id="catalogo" class="page">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid-catalogo">
-            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><img src="estilo1_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><img src="estilo2_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><img src="estilo3_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><img src="estilo4_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><img src="estilo5_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><img src="estilo6_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo1')"><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo2')"><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo3')"><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo4')"><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo5')"><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo6')"><img src="estilo6_1.jpg.jpeg"></div>
         </div>
     </section>
 
     <section id="detalle" class="page">
         <div class="volver" onclick="irA('catalogo')">← Volver</div>
+        <div class="click-zone" id="click-left" onclick="moverse(-1)"></div>
+        <div class="click-zone" id="click-right" onclick="moverse(1)"></div>
         
-        <div class="control-zone" id="left-zone" onclick="cambiarImg(-1)"></div>
-        <div class="control-zone" id="right-zone" onclick="cambiarImg(1)"></div>
-        
-        <div class="slider-container">
-            <img id="main-img" class="slider-img" src="">
+        <div class="tiktok-container">
+            <div class="tiktok-slider" id="slider"></div>
         </div>
-        <div class="dots" id="dots"></div>
     </section>
 
     <script>
-        let currentIndex = 0;
-        let currentEstilo = '';
-        
+        let index = 0;
+        const slider = document.getElementById('slider');
+
         function irA(id) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
 
         function abrirDetalle(estilo) {
-            currentEstilo = estilo;
-            currentIndex = 1;
-            actualizarVista();
+            index = 0;
+            slider.innerHTML = `<div class="slider-item"><img src="${estilo}_1.jpg.jpeg"></div>
+                                <div class="slider-item"><img src="${estilo}_2.jpg.jpeg"></div>
+                                <div class="slider-item"><img src="${estilo}_3.jpg.jpeg"></div>`;
             irA('detalle');
+            slider.style.transform = `translateX(0)`;
         }
 
-        function cambiarImg(direccion) {
-            currentIndex += direccion;
-            if (currentIndex < 1) currentIndex = 1;
-            if (currentIndex > 3) currentIndex = 3;
-            actualizarVista();
+        function moverse(dir) {
+            index += dir;
+            if (index < 0) index = 0;
+            if (index > 2) index = 2;
+            slider.style.transform = `translateX(-${index * 100}vw)`;
         }
 
-        // Soporte para flechas del teclado
+        // Teclas para la PC
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('detalle').style.display === 'block') {
-                if (e.key === 'ArrowLeft') cambiarImg(-1);
-                if (e.key === 'ArrowRight') cambiarImg(1);
-                if (e.key === 'Escape') irA('catalogo');
+                if (e.key === 'ArrowLeft') moverse(-1);
+                if (e.key === 'ArrowRight') moverse(1);
             }
         });
-
-        function actualizarVista() {
-            document.getElementById('main-img').src = `${currentEstilo}_${currentIndex}.jpg.jpeg`;
-            let dotsHTML = '';
-            for(let i=1; i<=3; i++) dotsHTML += `<div class="dot ${i===currentIndex ? 'active' : ''}"></div>`;
-            document.getElementById('dots').innerHTML = dotsHTML;
-        }
     </script>
 </body>
 </html>
