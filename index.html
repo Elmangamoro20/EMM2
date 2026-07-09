@@ -19,12 +19,10 @@
         .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-size: 1rem; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; pointer-events: none; }
         .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px; border: 1px solid #fff; }
         
-        /* Vista Detalle */
         #detalle { display: none; position: relative; }
         .slider-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
         .slider-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        /* Zonas de control: Izquierda y Derecha */
         .control-zone { position: absolute; top: 0; width: 50%; height: 100%; z-index: 500; cursor: pointer; }
         #left-zone { left: 0; }
         #right-zone { right: 0; }
@@ -84,6 +82,14 @@
             if (currentIndex > 3) currentIndex = 3;
             actualizarVista();
         }
+
+        // Soporte para flechas del teclado
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('detalle').style.display === 'block') {
+                if (e.key === 'ArrowLeft') cambiarImg(-1);
+                if (e.key === 'ArrowRight') cambiarImg(1);
+            }
+        });
 
         function actualizarVista() {
             document.getElementById('main-img').src = `${currentEstilo}_${currentIndex}.jpg.jpeg`;
