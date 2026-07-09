@@ -5,60 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>emm2.www</title>
     <style>
-        /* Estilos base limpios y eficientes */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
-        
-        /* Botones y etiquetas */
-        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; margin-top: 20px; }
-        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px; border: 1px solid #fff; font-weight: bold; }
-        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-size: 1rem; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; pointer-events: none; }
-
-        /* Contenedores de página */
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
-        
-        /* Página INICIO */
-        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-
-        /* Página CATÁLOGO (Grid con scroll vertical) */
+        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
         #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
         .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px 40px 20px; }
-        
-        /* Resposivo: 3 en PC, 1 en Celular */
         @media (min-width: 601px) { .grid-catalogo { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
-        
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; }
         .item img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Página DETALLE (Vista TikTok) */
-        #detalle { padding: 0; display: none; overflow: hidden; }
+        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-size: 1rem; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; pointer-events: none; }
+        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px; border: 1px solid #fff; }
         
-        /* Contenedor principal que captura los toques */
-        .tiktok-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; touch-action: pan-x; }
+        /* Vista Detalle */
+        #detalle { display: none; position: relative; }
+        .slider-container { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        .slider-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        /* La franja que se mueve horizontalmente */
-        .tiktok-slider { 
-            display: flex; 
-            width: 300vw; /* 3 imágenes = 300% del ancho */
-            height: 100vh; 
-            transition: transform 0.4s ease-out; 
-            will-change: transform; /* Ayuda a la suavidad en celular */
-        }
+        /* Zonas de control: Izquierda y Derecha */
+        .control-zone { position: absolute; top: 0; width: 50%; height: 100%; z-index: 500; cursor: pointer; }
+        #left-zone { left: 0; }
+        #right-zone { right: 0; }
         
-        /* Cada una de las 3 imágenes */
-        .slider-item { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .slider-item img { width: 100%; height: 100%; object-fit: contain; background: #000; }
-        
-        /* Puntos indicadores */
-        .dots { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 100; pointer-events: none; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.5); }
-        .dot.active { background: #fff; transform: scale(1.2); }
-
-        /* Icono de WhatsApp */
-        .wp { position: fixed; bottom: 30px; right: 20px; z-index: 1000; text-decoration: none; text-align: center; }
-        .wp img { width: 50px; height: 50px; }
-        .wp p { font-size: 12px; color: #25d366; font-weight: bold; margin-top: 5px; }
+        .dots { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 600; pointer-events: none; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+        .dot.active { background: #fff; }
     </style>
 </head>
 <body>
@@ -70,130 +43,53 @@
     <section id="catalogo" class="page">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid-catalogo">
-            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><img src="estilo1_1.jpg.jpeg" alt="Remera V1"></div>
-            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><img src="estilo2_1.jpg.jpeg" alt="Remera V2"></div>
-            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><img src="estilo3_1.jpg.jpeg" alt="Remera V3"></div>
-            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><img src="estilo4_1.jpg.jpeg" alt="Remera V4"></div>
-            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><img src="estilo5_1.jpg.jpeg" alt="Remera V5"></div>
-            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><img src="estilo6_1.jpg.jpeg" alt="Remera V6"></div>
+            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><img src="estilo6_1.jpg.jpeg"></div>
         </div>
     </section>
 
     <section id="detalle" class="page">
         <div class="volver" onclick="irA('catalogo')">← Volver</div>
-        <div class="tiktok-container">
-            <div class="tiktok-slider" id="slider"></div>
+        <div class="control-zone" id="left-zone" onclick="cambiarImg(-1)"></div>
+        <div class="control-zone" id="right-zone" onclick="cambiarImg(1)"></div>
+        <div class="slider-container">
+            <img id="main-img" class="slider-img" src="">
         </div>
         <div class="dots" id="dots"></div>
     </section>
 
-    <a href="https://wa.me/5491162669735" class="wp" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-        <p>1162669735</p>
-    </a>
-
     <script>
         let currentIndex = 0;
-        let startX = 0;
-        let diffX = 0; // Guardamos la diferencia para usarla en touchend
-        const slider = document.getElementById('slider');
-
-        // Navegación simple entre pantallas
+        let currentEstilo = '';
+        
         function irA(id) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            // Usamos flex para centrar el inicio, y block para las otras
-            document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : (id === 'catalogo' ? 'block' : 'flex'));
+            document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
 
-        // Al abrir un diseño, reiniciamos el slider y cargamos las 3 imágenes
         function abrirDetalle(estilo) {
-            currentIndex = 0;
-            slider.innerHTML = '';
-            const dotsContainer = document.getElementById('dots');
-            dotsContainer.innerHTML = '';
-            
-            // Generamos las 3 imágenes para el slider
-            for (let i = 1; i <= 3; i++) {
-                slider.innerHTML += `<div class="slider-item"><img src="${estilo}_${i}.jpg.jpeg" alt="${estilo} Imagen ${i}"></div>`;
-                dotsContainer.innerHTML += `<div class="dot ${i===1 ? 'active' : ''}"></div>`;
-            }
-            
+            currentEstilo = estilo;
+            currentIndex = 1;
+            actualizarVista();
             irA('detalle');
-            // Reseteamos la posición al inicio
-            updatePos(true);
         }
 
-        // --- LÓGICA DE SWIPE (DESLIZAMIENTO) REFORZADA ---
+        function cambiarImg(direccion) {
+            currentIndex += direccion;
+            if (currentIndex < 1) currentIndex = 1;
+            if (currentIndex > 3) currentIndex = 3;
+            actualizarVista();
+        }
 
-        // Capturamos el inicio del toque
-        slider.addEventListener('touchstart', (e) => {
-            // Guardamos la posición X del primer dedo
-            startX = e.touches[0].clientX;
-            // Quitamos la transición temporalmente para que el movimiento sea inmediato al dedo
-            slider.style.transition = 'none';
-        }, {passive: true});
-
-        // Capturamos el movimiento del dedo
-        slider.addEventListener('touchmove', (e) => {
-            // Calculamos la distancia movida
-            const currentX = e.touches[0].clientX;
-            diffX = startX - currentX;
-            
-            // Calculamos la posición base actual (currentIndex * 100vw)
-            const currentOffset = currentIndex * window.innerWidth;
-            
-            // Calculamos la nueva posición sumando el movimiento del dedo
-            let newX = -currentOffset - diffX;
-            
-            // Ponemos límites para no ir más allá del principio o el final
-            const maxOffset = -(2 * window.innerWidth);
-            if (newX > 0) newX = 0; // No pasar del principio
-            if (newX < maxOffset) newX = maxOffset; // No pasar del final
-            
-            // Aplicamos el movimiento inmediatamente
-            slider.style.transform = `translateX(${newX}px)`;
-        }, {passive: true});
-
-        // Capturamos cuando el dedo se levanta
-        slider.addEventListener('touchend', (e) => {
-            // Restauramos la transición
-            slider.style.transition = 'transform 0.4s ease-out';
-            
-            // Si el movimiento fue significativo (más de 1/4 del ancho de la pantalla)
-            if (Math.abs(diffX) > window.innerWidth / 4) {
-                // Si deslizó a la izquierda y no estamos en la última, pasamos a la siguiente
-                if (diffX > 0 && currentIndex < 2) {
-                    currentIndex++;
-                } 
-                // Si deslizó a la derecha y no estamos en la primera, volvemos a la anterior
-                else if (diffX < 0 && currentIndex > 0) {
-                    currentIndex--;
-                }
-            }
-            
-            // Actualizamos la posición definitiva
-            updatePos();
-            // Reseteamos diffX para el siguiente toque
-            diffX = 0;
-        });
-
-        // Función que mueve el slider a su posición final y actualiza los puntos
-        function updatePos(resetTransition = false) {
-            // Si abrimos por primera vez, movemos sin animación
-            if (resetTransition) {
-                slider.style.transition = 'none';
-                slider.style.transform = `translateX(-${currentIndex * 100}vw)`;
-                // Forzamos un reflow para que el navegador aplique el cambio de animación antes de la siguiente línea
-                slider.offsetHeight;
-                slider.style.transition = 'transform 0.4s ease-out';
-            } else {
-                slider.style.transform = `translateX(-${currentIndex * 100}vw)`;
-            }
-            
-            // Actualizamos los puntos
-            document.querySelectorAll('#dots .dot').forEach((d, i) => {
-                d.className = i === currentIndex ? 'dot active' : 'dot';
-            });
+        function actualizarVista() {
+            document.getElementById('main-img').src = `${currentEstilo}_${currentIndex}.jpg.jpeg`;
+            let dotsHTML = '';
+            for(let i=1; i<=3; i++) dotsHTML += `<div class="dot ${i===currentIndex ? 'active' : ''}"></div>`;
+            document.getElementById('dots').innerHTML = dotsHTML;
         }
     </script>
 </body>
