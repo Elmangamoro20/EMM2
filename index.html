@@ -80,8 +80,6 @@
         <div class="swiper">
             <div class="swiper-wrapper" id="slider-content"></div>
             <div class="swiper-pagination"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
         </div>
     </section>
 
@@ -100,7 +98,6 @@
             mySwiper = new Swiper('.swiper', { 
                 zoom: true,
                 keyboard: { enabled: true, onlyInViewport: true },
-                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
                 pagination: { el: '.swiper-pagination', clickable: true } 
             });
         }
