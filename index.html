@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMM2</title>
-    <!-- Swiper CSS para slider y zoom -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,7 +18,6 @@
         .item img { width: 100%; height: 100%; object-fit: contain; }
         .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; }
         
-        /* Swiper Zoom */
         .swiper { width: 100vw; height: 100vh; }
         .swiper-slide { display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
         .swiper-zoom-container { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
@@ -73,8 +71,11 @@
             `;
             irA('detalle');
             if(mySwiper) mySwiper.destroy();
-            // Activamos el modo zoom
-            mySwiper = new Swiper('.swiper', { zoom: true });
+            // Configuración del Swiper con Zoom y Teclado
+            mySwiper = new Swiper('.swiper', { 
+                zoom: true,
+                keyboard: { enabled: true, onlyInViewport: true } 
+            });
         }
     </script>
 </body>
