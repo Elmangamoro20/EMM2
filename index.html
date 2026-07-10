@@ -10,7 +10,7 @@
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         
-        /* Fondo animado */
+        /* Fondo Animado */
         .fondo-animado { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
         .remera-flotante { position: absolute; width: 150px; opacity: 0.4; pointer-events: none; animation: subir 20s linear infinite; }
         .remera-2, .remera-3 { display: none; }
@@ -99,6 +99,7 @@
             if(mySwiper) mySwiper.destroy();
             mySwiper = new Swiper('.swiper', { 
                 zoom: true,
+                keyboard: { enabled: true, onlyInViewport: true },
                 navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
                 pagination: { el: '.swiper-pagination', clickable: true } 
             });
