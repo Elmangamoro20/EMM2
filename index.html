@@ -10,7 +10,17 @@
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         
-        /* Inicio Mejorado */
+        /* Fondo Animado */
+        .fondo-animado { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
+        .remera-flotante { position: absolute; width: 150px; opacity: 0.4; pointer-events: none; animation: flotar 20s infinite ease-in-out; }
+        @keyframes flotar {
+            0% { transform: translate(0, 100vh) rotate(0deg); }
+            33% { transform: translate(50vw, 50vh) rotate(120deg); }
+            66% { transform: translate(-20vw, 20vh) rotate(240deg); }
+            100% { transform: translate(0, -20vh) rotate(360deg); }
+        }
+
+        /* Inicio */
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
         .descripcion { max-width: 400px; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.5; color: #ccc; }
@@ -18,21 +28,21 @@
         .btn { background: #fff; color: #000; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
         .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
 
+        /* Catálogo */
         #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
         .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
         .item img { width: 100%; height: 100%; object-fit: contain; }
-        
         .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
         .price { position: absolute; top: 45px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
         .info { position: absolute; top: 80px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 12px; }
         
-        .swiper { width: 100vw; height: 100vh; }
+        /* Detalle Swiper */
+        .swiper { width: 100vw; height: 100vh; position: relative; }
         .swiper-slide { display: flex; align-items: center; justify-content: center; background: #000; }
         .swiper-zoom-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .swiper-slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
         .swiper-pagination { position: fixed !important; bottom: 30px !important; z-index: 9999 !important; width: 100% !important; text-align: center; }
         .swiper-pagination-bullet { background: #fff !important; opacity: 0.5 !important; width: 12px !important; height: 12px !important; margin: 0 6px !important; }
         .swiper-pagination-bullet-active { opacity: 1 !important; }
@@ -44,6 +54,11 @@
 </head>
 <body>
     <section id="inicio" class="page" style="display: flex;">
+        <div class="fondo-animado">
+            <img src="remera_fondo1.png" class="remera-flotante" style="left: 5%; animation-duration: 25s;">
+            <img src="remera_fondo2.png" class="remera-flotante" style="left: 35%; animation-duration: 30s; animation-delay: -5s;">
+            <img src="remera_fondo1.png" class="remera-flotante" style="left: 65%; animation-duration: 22s; animation-delay: -10s;">
+        </div>
         <h1>EMM2</h1>
         <p class="descripcion">Remeras blancas 100% algodón, talle M, peinado 24.1. Calidad premium.</p>
         <div class="btn-container">
