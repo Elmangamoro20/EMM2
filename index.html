@@ -17,9 +17,10 @@
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
         .item img { width: 100%; height: 100%; object-fit: contain; }
         
-        /* Etiquetas de Nombre y Precio */
+        /* Etiquetas de información */
         .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
-        .price { position: absolute; top: 45px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; color: #fff; }
+        .price { position: absolute; top: 45px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
+        .info { position: absolute; top: 80px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 12px; }
         
         .swiper { width: 100vw; height: 100vh; position: relative; }
         .swiper-slide { display: flex; align-items: center; justify-content: center; background: #000; }
@@ -44,12 +45,12 @@
     <section id="catalogo" class="page">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid-catalogo">
-            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><div class="price">$15.000</div><img src="estilo1_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><div class="price">$15.000</div><img src="estilo2_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><div class="price">$15.000</div><img src="estilo3_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><div class="price">$20.000</div><img src="estilo4_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><div class="price">$20.000</div><img src="estilo5_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><div class="price">$20.000</div><img src="estilo6_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo6_1.jpg.jpeg"></div>
         </div>
     </section>
 
