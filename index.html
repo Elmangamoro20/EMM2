@@ -2,61 +2,119 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EMM2</title>
-    <!-- Incluimos Matter.js para las físicas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         
-        /* Contenedor del motor de físicas */
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+        /* Fondo Animado Simple y Elegante */
+        .fondo-animado { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
+        .remera-flotante { position: absolute; width: 150px; opacity: 0.4; pointer-events: none; animation: flotar 25s infinite linear; }
+        @keyframes flotar {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-20vh) rotate(360deg); }
+        }
+
+        /* Inicio */
+        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
+        .descripcion { max-width: 400px; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.5; color: #ccc; }
+        .btn-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; }
+        .btn { background: #fff; color: #000; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
+
+        /* Catálogo */
+        #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
+        .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
+        .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
+        .item img { width: 100%; height: 100%; object-fit: contain; }
+        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
+        .price { position: absolute; top: 45px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
+        .info { position: absolute; top: 80px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 12px; }
         
-        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        /* ... resto de tus estilos (btn, h1, etc) siguen igual ... */
+        /* Swiper Detalle */
+        .swiper { width: 100vw; height: 100vh; position: relative; }
+        .swiper-slide { display: flex; align-items: center; justify-content: center; background: #000; }
+        .swiper-zoom-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .swiper-slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .swiper-pagination { position: fixed !important; bottom: 30px !important; z-index: 9999 !important; width: 100% !important; text-align: center; }
+        .swiper-pagination-bullet { background: #fff !important; opacity: 0.5 !important; width: 12px !important; height: 12px !important; margin: 0 6px !important; }
+        .swiper-pagination-bullet-active { opacity: 1 !important; }
+        
+        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border: 1px solid #fff; border-radius: 10px; font-weight: bold; }
+        .wp { position: fixed; bottom: 30px; right: 20px; z-index: 2000; }
+        .wp img { width: 50px; }
     </style>
 </head>
 <body>
-    <div id="canvas-container"></div>
-    
     <section id="inicio" class="page" style="display: flex;">
+        <div class="fondo-animado">
+            <img src="remera_fondo1.png" class="remera-flotante" style="left: 10%; animation-duration: 20s;">
+            <img src="remera_fondo2.png" class="remera-flotante" style="left: 50%; animation-duration: 25s; animation-delay: -5s;">
+        </div>
         <h1>EMM2</h1>
-        <p>Remeras blancas 100% algodón...</p>
-        <button class="btn" onclick="irA('catalogo')">ENTRAR</button>
+        <p class="descripcion">Remeras blancas 100% algodón, talle M, peinado 24.1. Calidad premium.</p>
+        <div class="btn-container">
+            <button class="btn" onclick="irA('catalogo')">ENTRAR</button>
+            <button class="btn btn-outline" onclick="abrirTalle()">Talle M</button>
+        </div>
     </section>
 
+    <section id="catalogo" class="page">
+        <div class="volver" onclick="irA('inicio')">← Volver</div>
+        <div class="grid-catalogo">
+            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><div class="price">$15.000</div><div class="info">Un logo</div><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><div class="price">$20.000</div><div class="info">Dos logos</div><img src="estilo6_1.jpg.jpeg"></div>
+        </div>
+    </section>
+
+    <section id="detalle" class="page">
+        <div class="volver" onclick="irA('catalogo')">← Volver</div>
+        <div class="swiper">
+            <div class="swiper-wrapper" id="slider-content"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <a href="https://wa.me/5491162669735" class="wp" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"></a>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Motor de físicas
-        const { Engine, Render, World, Bodies, Body } = Matter;
-        const engine = Engine.create();
-        const render = Render.create({
-            element: document.getElementById('canvas-container'),
-            engine: engine,
-            options: { width: window.innerWidth, height: window.innerHeight, background: 'transparent', wireframes: false }
-        });
-
-        // Crear paredes invisibles para que no salgan de la pantalla
-        const wallOptions = { isStatic: true, render: { visible: false } };
-        World.add(engine.world, [
-            Bodies.rectangle(window.innerWidth/2, -10, window.innerWidth, 20, wallOptions),
-            Bodies.rectangle(window.innerWidth/2, window.innerHeight+10, window.innerWidth, 20, wallOptions),
-            Bodies.rectangle(-10, window.innerHeight/2, 20, window.innerHeight, wallOptions),
-            Bodies.rectangle(window.innerWidth+10, window.innerHeight/2, 20, window.innerHeight, wallOptions)
-        ]);
-
-        // Crear remeras con rebote
-        for(let i=0; i<4; i++) {
-            let remera = Bodies.circle(Math.random()*window.innerWidth, Math.random()*window.innerHeight, 70, {
-                restitution: 1, // Rebote total
-                render: { sprite: { texture: i%2==0 ? 'remera_fondo1.png' : 'remera_fondo2.png', xScale: 0.5, yScale: 0.5 } }
-            });
-            Body.setVelocity(remera, {x: Math.random()*10-5, y: Math.random()*10-5});
-            World.add(engine.world, remera);
+        let mySwiper;
+        function irA(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
-
-        Engine.run(engine);
-        Render.run(render);
+        function abrirTalle() {
+            const container = document.getElementById('slider-content');
+            container.innerHTML = `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="talle_m.jpg.jpeg"></div></div>`;
+            irA('detalle');
+            if(mySwiper) mySwiper.destroy();
+            mySwiper = new Swiper('.swiper', { zoom: true });
+        }
+        function abrirDetalle(estilo) {
+            const container = document.getElementById('slider-content');
+            container.innerHTML = `
+                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_1.jpg.jpeg"></div></div>
+                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_2.jpg.jpeg"></div></div>
+                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_3.jpg.jpeg"></div></div>
+            `;
+            irA('detalle');
+            if(mySwiper) mySwiper.destroy();
+            mySwiper = new Swiper('.swiper', { 
+                zoom: true,
+                pagination: { el: '.swiper-pagination', clickable: true },
+                keyboard: { enabled: true, onlyInViewport: true }
+            });
+        }
     </script>
 </body>
 </html>
