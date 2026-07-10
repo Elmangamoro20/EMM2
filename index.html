@@ -3,48 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>emm2.www</title>
+    <title>EMM2</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .btn { background: #fff; color: #000; padding: 15px 40px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 18px; }
         #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
         .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; }
-        .item img { width: 100%; height: 100%; object-fit: cover; }
+        /* Imagen completa */
+        .item img { width: 100%; height: 100%; object-fit: contain; background: #111; }
+        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; }
         
-        /* El slider igual al primero que te funcionó */
         .tiktok-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
         .tiktok-slider { display: flex; width: 300vw; height: 100vh; transition: transform 0.4s ease-out; }
         .slider-item { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .slider-item img { width: 100%; height: 100%; object-fit: contain; }
-        
-        /* Zonas de control invisibles sobre el slider */
         .click-zone { position: absolute; top: 0; width: 50%; height: 100%; z-index: 50; cursor: pointer; }
         #click-left { left: 0; }
         #click-right { right: 0; }
+        .volver { position: absolute; top: 20px; left: 20px; z-index: 100; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid #fff; border-radius: 10px; }
         
-        .volver { position: absolute; top: 20px; left: 20px; z-index: 100; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; }
+        /* Botón WhatsApp */
+        .wp { position: fixed; bottom: 30px; right: 20px; z-index: 200; text-decoration: none; text-align: center; }
+        .wp img { width: 50px; }
     </style>
 </head>
 <body>
     <section id="inicio" class="page" style="display: flex;">
-        <h1>emm2.www</h1>
+        <h1>EMM2</h1>
         <button class="btn" onclick="irA('catalogo')">ENTRAR</button>
     </section>
 
     <section id="catalogo" class="page">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid-catalogo">
-            <div class="item" onclick="abrirDetalle('estilo1')"><img src="estilo1_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo2')"><img src="estilo2_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo3')"><img src="estilo3_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo4')"><img src="estilo4_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo5')"><img src="estilo5_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo6')"><img src="estilo6_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><img src="estilo6_1.jpg.jpeg"></div>
         </div>
     </section>
 
@@ -52,21 +54,22 @@
         <div class="volver" onclick="irA('catalogo')">← Volver</div>
         <div class="click-zone" id="click-left" onclick="moverse(-1)"></div>
         <div class="click-zone" id="click-right" onclick="moverse(1)"></div>
-        
         <div class="tiktok-container">
             <div class="tiktok-slider" id="slider"></div>
         </div>
     </section>
 
+    <a href="https://wa.me/5491162669735" class="wp" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+    </a>
+
     <script>
         let index = 0;
         const slider = document.getElementById('slider');
-
         function irA(id) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
-
         function abrirDetalle(estilo) {
             index = 0;
             slider.innerHTML = `<div class="slider-item"><img src="${estilo}_1.jpg.jpeg"></div>
@@ -75,15 +78,11 @@
             irA('detalle');
             slider.style.transform = `translateX(0)`;
         }
-
         function moverse(dir) {
             index += dir;
-            if (index < 0) index = 0;
-            if (index > 2) index = 2;
+            if (index < 0) index = 0; if (index > 2) index = 2;
             slider.style.transform = `translateX(-${index * 100}vw)`;
         }
-
-        // Teclas para la PC
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('detalle').style.display === 'block') {
                 if (e.key === 'ArrowLeft') moverse(-1);
