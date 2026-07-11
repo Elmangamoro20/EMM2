@@ -59,7 +59,7 @@
             <img src="remera_fondo1.png" class="remera-flotante remera-3" style="animation-duration: 22s;">
         </div>
         <h1>EMM2</h1>
-        <p class="descripcion">Remeras calidad premium en algodón peinado 24.1. Máxima suavidad y durabilidad. Talle M.</p>
+        <p class="descripcion">Remeras 100% algodón, calidad premium en peinado 24.1. Máxima suavidad y durabilidad. Talle M.</p>
         
         <div class="btn-container">
             <div class="row-btn">
@@ -67,6 +67,7 @@
                 <button class="btn-info" onclick="irA('info-page')">?</button>
             </div>
             <button class="btn btn-outline" onclick="abrirStock()">REMERAS</button>
+            <button class="btn btn-outline" onclick="abrirTalle()">TALLE M</button>
         </div>
     </section>
 
@@ -112,6 +113,11 @@
                 keyboard: { enabled: true, onlyInViewport: true },
                 pagination: { el: '.swiper-pagination', clickable: true } 
             });
+        }
+        function abrirTalle() {
+            const container = document.getElementById('slider-content');
+            container.innerHTML = `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="talle_m.jpg.jpeg"></div></div>`;
+            configurarSwiper();
         }
         function abrirStock() {
             const container = document.getElementById('slider-content');
