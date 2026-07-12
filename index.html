@@ -14,12 +14,7 @@
         .fondo-animado { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
         .remera-flotante { position: absolute; width: 150px; opacity: 0.4; pointer-events: none; animation: subir 20s linear infinite; }
         .remera-2, .remera-3 { display: none; }
-        @media (min-width: 768px) {
-            .remera-2, .remera-3 { display: block; }
-            .remera-1 { left: 15% !important; }
-            .remera-2 { left: 50% !important; }
-            .remera-3 { left: 85% !important; }
-        }
+        @media (min-width: 768px) { .remera-2, .remera-3 { display: block; } .remera-1 { left: 15% !important; } .remera-2 { left: 50% !important; } .remera-3 { left: 85% !important; } }
         @keyframes subir { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-20vh) rotate(360deg); } }
 
         /* Estilos UI */
@@ -32,18 +27,19 @@
         .row-btn { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-info { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-weight: bold; font-size: 18px; }
         
-        /* Contenido Info */
-        #info-page { padding: 80px 20px; text-align: center; overflow-y: auto; }
-        #info-page p { max-width: 600px; margin: 20px auto; line-height: 1.6; color: #ccc; }
-
-        /* Catálogo */
-        #catalogo { overflow-y: auto; display: none; padding-top: 60px; }
-        .grid-catalogo { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
-        @media (max-width: 600px) { .grid-catalogo { grid-template-columns: 1fr; } }
+        /* Catálogo y Items */
+        .page-list { overflow-y: auto; display: none; padding-top: 60px; }
+        .grid { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
         .item img { width: 100%; height: 100%; object-fit: contain; }
-        .label { position: absolute; top: 10px; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
+        .label, .price, .info { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
+        .label { top: 10px; } .price { top: 45px; } .info { top: 80px; font-size: 12px; }
         
+        /* Modal No Disponible */
+        #modal-no { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-box { padding: 30px; border: 2px solid #fff; border-radius: 15px; background: #000; font-weight: bold; }
+
         /* Swiper */
         .swiper { width: 100vw; height: 100vh; }
         .swiper-pagination-bullet { background: #fff !important; opacity: 0.5 !important; width: 12px !important; height: 12px !important; }
@@ -52,6 +48,10 @@
     </style>
 </head>
 <body>
+    <div id="modal-no" onclick="this.style.display='none'">
+        <div class="modal-box">No disponible por ahora</div>
+    </div>
+
     <section id="inicio" class="page" style="display: flex;">
         <div class="fondo-animado">
             <img src="remera_fondo1.png" class="remera-flotante remera-1" style="left: 40%; animation-duration: 25s;">
@@ -60,33 +60,36 @@
         </div>
         <h1>EMM2</h1>
         <p class="descripcion">Remeras 100% algodón, calidad premium en peinado 24.1. Máxima suavidad y durabilidad. Talle M.</p>
-        
         <div class="btn-container">
             <div class="row-btn">
                 <button class="btn" style="width: 200px;" onclick="irA('catalogo')">VER MODELOS</button>
-                <button class="btn-info" onclick="irA('info-page')">?</button>
+                <button class="btn-info" onclick="alert('Modelos presentados como ilustración digital.')">?</button>
             </div>
-            <button class="btn btn-outline" onclick="abrirStock()">REMERAS</button>
+            <button class="btn btn-outline" onclick="irA('stock')">REMERA</button>
             <button class="btn btn-outline" onclick="abrirTalle()">TALLE M</button>
         </div>
     </section>
 
-    <section id="info-page" class="page">
+    <section id="stock" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <h2>Información</h2>
-        <p>Los modelos presentados en la sección "Ver Modelos" son ilustraciones digitales para mostrar cómo pueden aplicarse los logos en las prendas.</p>
-        <p>Las fotografías de las remeras reales, con su calce y acabado final, las encontrarás en la sección "Remeras".</p>
+        <div class="grid">
+            <div class="item" onclick="abrirStockDetalle()">
+                <div class="label">V7</div><div class="price">$12.000</div><div class="info">sin logo</div>
+                <img src="frente_real.jpg">
+            </div>
+            <button class="btn-info" style="margin: 20px;" onclick="alert('Esta remera es sin etiqueta ni logo.')">?</button>
+        </div>
     </section>
 
-    <section id="catalogo" class="page">
+    <section id="catalogo" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="grid-catalogo">
-            <div class="item" onclick="abrirDetalle('estilo1')"><div class="label">V1</div><img src="estilo1_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo2')"><div class="label">V2</div><img src="estilo2_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo3')"><div class="label">V3</div><img src="estilo3_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo4')"><div class="label">V4</div><img src="estilo4_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo5')"><div class="label">V5</div><img src="estilo5_1.jpg.jpeg"></div>
-            <div class="item" onclick="abrirDetalle('estilo6')"><div class="label">V6</div><img src="estilo6_1.jpg.jpeg"></div>
+        <div class="grid">
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V1</div><div class="price">$15.000</div><div class="info">1 logo</div><img src="estilo1_1.jpg.jpeg"></div>
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V2</div><div class="price">$15.000</div><div class="info">1 logo</div><img src="estilo2_1.jpg.jpeg"></div>
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V3</div><div class="price">$15.000</div><div class="info">1 logo</div><img src="estilo3_1.jpg.jpeg"></div>
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V4</div><div class="price">$20.000</div><div class="info">2 logos</div><img src="estilo4_1.jpg.jpeg"></div>
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V5</div><div class="price">$20.000</div><div class="info">2 logos</div><img src="estilo5_1.jpg.jpeg"></div>
+            <div class="item" onclick="document.getElementById('modal-no').style.display='flex'"><div class="label">V6</div><div class="price">$20.000</div><div class="info">2 logos</div><img src="estilo6_1.jpg.jpeg"></div>
         </div>
     </section>
 
@@ -119,20 +122,11 @@
             container.innerHTML = `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="talle_m.jpg.jpeg"></div></div>`;
             configurarSwiper();
         }
-        function abrirStock() {
+        function abrirStockDetalle() {
             const container = document.getElementById('slider-content');
             container.innerHTML = `
                 <div class="swiper-slide"><div class="swiper-zoom-container"><img src="frente_real.jpg"></div></div>
                 <div class="swiper-slide"><div class="swiper-zoom-container"><img src="espalda_real.jpg"></div></div>
-            `;
-            configurarSwiper();
-        }
-        function abrirDetalle(estilo) {
-            const container = document.getElementById('slider-content');
-            container.innerHTML = `
-                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_1.jpg.jpeg"></div></div>
-                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_2.jpg.jpeg"></div></div>
-                <div class="swiper-slide"><div class="swiper-zoom-container"><img src="${estilo}_3.jpg.jpeg"></div></div>
             `;
             configurarSwiper();
         }
