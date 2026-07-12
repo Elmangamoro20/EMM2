@@ -31,6 +31,10 @@
         .label, .price, .info { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
         .label { top: 10px; } .price { top: 45px; } .info { top: 80px; font-size: 12px; }
         
+        /* Ventana No Disponible */
+        .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
+        .modal-box { padding: 15px; border: 2px solid #fff; border-radius: 10px; background: #000; font-size: 14px; text-align: center; font-weight: bold; }
+        
         .swiper { width: 100vw; height: 100vh; }
         .swiper-pagination-bullet { background: #fff !important; width: 12px !important; height: 12px !important; }
         .swiper-pagination-bullet-active { opacity: 1 !important; transform: scale(1.3); }
@@ -48,7 +52,6 @@
         </div>
     </section>
 
-    <!-- Páginas de Info -->
     <section id="info-modelos" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="info-content"><h2>Modelos</h2><p>Los modelos presentados son ilustraciones digitales para mostrar cómo pueden aplicarse los logos en las prendas.</p></div>
@@ -75,7 +78,8 @@
             <script>
                 [1,2,3,4,5,6].forEach(i => {
                     document.write(`
-                        <div class="item opaco" onclick="alert('No disponible por ahora')">
+                        <div class="item opaco">
+                            <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
                             <div class="label">V${i}</div><div class="price">$15.000</div><div class="info">Logo</div>
                             <img src="estilo${i}_1.jpg.jpeg">
                         </div>
