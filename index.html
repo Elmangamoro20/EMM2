@@ -34,11 +34,11 @@
         .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
         .modal-box { padding: 15px; border: 2px solid #fff; border-radius: 10px; background: #000; font-size: 14px; text-align: center; font-weight: bold; }
         
-        /* Swiper y Paginación fija */
-        .swiper { width: 100vw; height: 100vh; }
-        .swiper-pagination { bottom: 30px !important; z-index: 1001 !important; }
-        .swiper-pagination-bullet { background: #fff !important; opacity: 0.5 !important; width: 12px !important; height: 12px !important; }
-        .swiper-pagination-bullet-active { opacity: 1 !important; transform: scale(1.4); }
+        /* FIJO: Puntos de paginación visibles y constantes */
+        .swiper { width: 100vw; height: 100vh; position: relative; }
+        .swiper-pagination { position: absolute !important; bottom: 30px !important; left: 0 !important; width: 100% !important; z-index: 9999 !important; display: flex !important; justify-content: center !important; gap: 8px !important; }
+        .swiper-pagination-bullet { background: #fff !important; opacity: 0.6 !important; width: 14px !important; height: 14px !important; border-radius: 50% !important; margin: 0 !important; }
+        .swiper-pagination-bullet-active { opacity: 1 !important; transform: scale(1.3); background: #fff !important; }
         
         .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border: 1px solid #fff; border-radius: 10px; font-weight: bold; }
     </style>
@@ -95,7 +95,10 @@
 
     <section id="detalle" class="page">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="swiper"><div class="swiper-wrapper" id="slider-content"></div><div class="swiper-pagination"></div></div>
+        <div class="swiper">
+            <div class="swiper-wrapper" id="slider-content"></div>
+            <div class="swiper-pagination"></div>
+        </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -104,11 +107,13 @@
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
+        let mySwiper = null;
         function abrirSwiper(imagenes) {
             const container = document.getElementById('slider-content');
             container.innerHTML = imagenes.map(img => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${img.img}"></div></div>`).join('');
             irA('detalle');
-            new Swiper('.swiper', { 
+            if(mySwiper) mySwiper.destroy();
+            mySwiper = new Swiper('.swiper', { 
                 zoom: true, 
                 keyboard: { enabled: true, onlyInViewport: true }, 
                 pagination: { el: '.swiper-pagination', clickable: true } 
