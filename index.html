@@ -19,6 +19,11 @@
         .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
         .btn-info { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-weight: bold; flex-shrink: 0; }
         
+        /* Logo WhatsApp agrandado a 80px */
+        .wp-link { margin-top: 35px; display: flex; justify-content: center; opacity: 0.9; transition: 0.3s; }
+        .wp-link:hover { opacity: 1; transform: scale(1.05); }
+        .wp-link img { width: 80px; height: 80px; object-fit: contain; }
+        
         .page-list { overflow-y: auto; display: none; padding-top: 60px; padding-bottom: 40px; }
         .info-content { max-width: 500px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #ccc; }
         
@@ -34,7 +39,6 @@
         .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
         .modal-box { padding: 15px; border: 2px solid #fff; border-radius: 10px; background: #000; font-size: 14px; text-align: center; font-weight: bold; }
         
-        /* Puntos de paginación subidos y visibles */
         .swiper { width: 100vw; height: 100vh; }
         .swiper-pagination { bottom: 60px !important; z-index: 99999 !important; }
         .swiper-pagination-bullet { background: #fff !important; width: 14px !important; height: 14px !important; opacity: 0.7 !important; margin: 0 6px !important; }
@@ -52,78 +56,22 @@
             <div class="row-group"><button class="btn btn-outline" onclick="irA('stock')">REMERA</button><button class="btn-info" onclick="irA('info-remera')">?</button></div>
             <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
         </div>
+        
+        <a href="https://wa.me/5491162669735" class="wp-link" target="_blank">
+            <img src="whatsapp_icon.png" alt="WhatsApp">
+        </a>
     </section>
 
-    <section id="info-modelos" class="page page-list">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="info-content"><h2>Modelos</h2><p>Los modelos presentados son ilustraciones digitales para mostrar cómo pueden aplicarse los logos en las prendas.</p></div>
-    </section>
-
-    <section id="info-remera" class="page page-list">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="info-content"><h2>Remera</h2><p>Esta es la remera real en stock: es un producto básico, <b>sin logo</b> y <b>sin etiqueta</b>.</p></div>
-    </section>
-
-    <section id="stock" class="page page-list">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="grid">
-            <div class="item" onclick="abrirSwiper([{img:'portada_v7.jpg.jpeg'},{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
-                <div class="label">V7</div><div class="price">$12.000</div>
-                <div class="info-tag" style="top:80px">sin logo</div>
-                <div class="info-tag" style="top:115px">sin etiqueta</div>
-                <img src="portada_v7.jpg.jpeg">
-            </div>
-        </div>
-    </section>
-
-    <section id="catalogo" class="page page-list">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="grid">
-            <script>
-                const modelos = [
-                    {v:1, p:'$15.000', l:'1 logo'}, {v:2, p:'$15.000', l:'1 logo'}, 
-                    {v:3, p:'$15.000', l:'1 logo'}, {v:4, p:'$20.000', l:'2 logos'}, 
-                    {v:5, p:'$20.000', l:'2 logos'}, {v:6, p:'$20.000', l:'2 logos'}
-                ];
-                modelos.forEach(m => {
-                    document.write(`
-                        <div class="item opaco">
-                            <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
-                            <div class="label">V${m.v}</div><div class="price">${m.p}</div><div class="info-tag">${m.l}</div>
-                            <img src="estilo${m.v}_1.jpg.jpeg">
-                        </div>
-                    `);
-                });
-            </script>
-        </div>
-    </section>
-
-    <section id="detalle" class="page">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="swiper">
-            <div class="swiper-wrapper" id="slider-content"></div>
-            <div class="swiper-pagination"></div>
-        </div>
-    </section>
+    <section id="info-modelos" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div class="info-content"><h2>Modelos</h2><p>Los modelos presentados son ilustraciones digitales para mostrar cómo pueden aplicarse los logos en las prendas.</p></div></section>
+    <section id="info-remera" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div class="info-content"><h2>Remera</h2><p>Esta es la remera real en stock: es un producto básico, <b>sin logo</b> y <b>sin etiqueta</b>.</p></div></section>
+    <section id="stock" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div class="grid"><div class="item" onclick="abrirSwiper([{img:'portada_v7.jpg.jpeg'},{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])"><div class="label">V7</div><div class="price">$12.000</div><div class="info-tag" style="top:80px">sin logo</div><div class="info-tag" style="top:115px">sin etiqueta</div><img src="portada_v7.jpg.jpeg"></div></div></section>
+    <section id="catalogo" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div class="grid"><script>const modelos = [{v:1, p:'$15.000', l:'1 logo'}, {v:2, p:'$15.000', l:'1 logo'}, {v:3, p:'$15.000', l:'1 logo'}, {v:4, p:'$20.000', l:'2 logos'}, {v:5, p:'$20.000', l:'2 logos'}, {v:6, p:'$20.000', l:'2 logos'}];modelos.forEach(m => {document.write(`<div class="item opaco"><div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div><div class="label">V${m.v}</div><div class="price">${m.p}</div><div class="info-tag">${m.l}</div><img src="estilo${m.v}_1.jpg.jpeg"></div>`);});</script></div></section>
+    <section id="detalle" class="page"><div class="volver" onclick="irA('inicio')">← Volver</div><div class="swiper"><div class="swiper-wrapper" id="slider-content"></div><div class="swiper-pagination"></div></div></section>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        function irA(id) {
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
-        }
-        let mySwiper;
-        function abrirSwiper(imgs) {
-            const container = document.getElementById('slider-content');
-            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}"></div></div>`).join('');
-            irA('detalle');
-            if(mySwiper) mySwiper.destroy();
-            mySwiper = new Swiper('.swiper', { 
-                zoom: true, 
-                keyboard: true, 
-                pagination: { el: '.swiper-pagination', clickable: true } 
-            });
-        }
+        function irA(id) { document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block'); }
+        let mySwiper; function abrirSwiper(imgs) { const container = document.getElementById('slider-content'); container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}"></div></div>`).join(''); irA('detalle'); if(mySwiper) mySwiper.destroy(); mySwiper = new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } }); }
     </script>
 </body>
 </html>
