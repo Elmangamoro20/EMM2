@@ -12,80 +12,88 @@
         
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
+        .descripcion { max-width: 400px; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.5; color: #ccc; }
         .btn-container { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
         .row-group { display: flex; gap: 10px; align-items: center; }
         .btn { flex-grow: 1; background: #fff; color: #000; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
         .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
-        .btn-info { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-weight: bold; }
+        .btn-info { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-weight: bold; flex-shrink: 0; }
         
         .page-list { overflow-y: auto; display: none; padding-top: 60px; padding-bottom: 40px; }
-        .grid { display: grid; gap: 15px; max-width: 900px; margin: 0 auto; padding: 15px; grid-template-columns: repeat(2, 1fr); }
-        .item { aspect-ratio: 1/1; border: 2px solid #fff; border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; }
-        .item img { width: 100%; height: 100%; object-fit: cover; }
+        .info-content { max-width: 500px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #ccc; }
         
-        /* Etiquetas mejoradas */
-        .tag-v { position: absolute; top: 5px; left: 5px; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .tag-price { position: absolute; bottom: 5px; right: 5px; background: #000; border: 1px solid #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
-        .tag-logo { position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+        .grid { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         
-        /* Swiper Corregido para Móvil */
-        .swiper { width: 100vw; height: 100vh; background: #000; }
-        .swiper-slide { display: flex; justify-content: center; align-items: center; }
-        .swiper-slide img { max-width: 90%; max-height: 80%; object-fit: contain; }
-        .swiper-pagination { bottom: 40px !important; z-index: 100 !important; }
-        .swiper-pagination-bullet { width: 12px !important; height: 12px !important; background: #fff !important; opacity: 0.5 !important; }
+        .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
+        .item img { width: 100%; height: 100%; object-fit: contain; }
+        .opaco img { opacity: 0.3; }
+        .label, .price, .info-tag { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 13px; }
+        .label { top: 10px; } .price { top: 45px; } .info-tag { top: 80px; }
+        
+        .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
+        .modal-box { padding: 15px; border: 2px solid #fff; border-radius: 10px; background: #000; font-size: 14px; text-align: center; font-weight: bold; }
+        
+        /* Paginación Swiper fija */
+        .swiper { width: 100vw; height: 100vh; position: relative; }
+        .swiper-pagination { position: absolute !important; bottom: 30px !important; z-index: 9999 !important; }
+        .swiper-pagination-bullet { background: #fff !important; width: 12px !important; height: 12px !important; opacity: 0.6 !important; }
         .swiper-pagination-bullet-active { opacity: 1 !important; transform: scale(1.3); }
-        
-        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.7); padding: 10px; border: 1px solid #fff; border-radius: 10px; }
+        .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border: 1px solid #fff; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
     <section id="inicio" class="page" style="display: flex;">
         <h1>EMM2</h1>
+        <p class="descripcion">Remeras 100% algodón, calidad premium en peinado 24.1. Talle M.</p>
         <div class="btn-container">
             <div class="row-group"><button class="btn" onclick="irA('catalogo')">MODELOS</button><button class="btn-info" onclick="irA('info-modelos')">?</button></div>
             <div class="row-group"><button class="btn btn-outline" onclick="irA('stock')">REMERA</button><button class="btn-info" onclick="irA('info-remera')">?</button></div>
+            <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
         </div>
     </section>
 
-    <!-- Info -->
-    <section id="info-modelos" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div style="padding:20px"><p>Los modelos son ilustraciones para visualizar diseños.</p></div></section>
-    <section id="info-remera" class="page page-list"><div class="volver" onclick="irA('inicio')">← Volver</div><div style="padding:20px"><p>Remera básica: sin logo, sin etiqueta.</p></div></section>
+    <section id="info-modelos" class="page page-list">
+        <div class="volver" onclick="irA('inicio')">← Volver</div>
+        <div class="info-content"><h2>Modelos</h2><p>Los modelos presentados son ilustraciones digitales para mostrar cómo pueden aplicarse los logos en las prendas.</p></div>
+    </section>
 
-    <!-- Catálogo Modelos -->
+    <section id="info-remera" class="page page-list">
+        <div class="volver" onclick="irA('inicio')">← Volver</div>
+        <div class="info-content"><h2>Remera</h2><p>Esta es la remera real en stock: es un producto básico, <b>sin logo</b> y <b>sin etiqueta</b>.</p></div>
+    </section>
+
+    <section id="stock" class="page page-list">
+        <div class="volver" onclick="irA('inicio')">← Volver</div>
+        <div class="grid">
+            <div class="item" onclick="abrirSwiper([{img:'portada_v7.jpg.jpeg'},{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
+                <div class="label">V7</div><div class="price">$12.000</div>
+                <div class="info-tag" style="top:80px">sin logo</div>
+                <div class="info-tag" style="top:115px">sin etiqueta</div>
+                <img src="portada_v7.jpg.jpeg">
+            </div>
+        </div>
+    </section>
+
     <section id="catalogo" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid">
             <script>
                 const modelos = [
-                    { v: 'V1', price: '$15.000', logo: 'Frente' },
-                    { v: 'V2', price: '$15.000', logo: 'Espalda' },
-                    { v: 'V3', price: '$16.000', logo: 'Frente/Espalda' },
-                    { v: 'V4', price: '$15.000', logo: 'Frente' },
-                    { v: 'V5', price: '$15.000', logo: 'Frente' },
-                    { v: 'V6', price: '$16.000', logo: 'Frente/Espalda' }
+                    {v:1, p:'$15.000', l:'1 logo'}, {v:2, p:'$15.000', l:'1 logo'}, 
+                    {v:3, p:'$15.000', l:'1 logo'}, {v:4, p:'$20.000', l:'2 logos'}, 
+                    {v:5, p:'$20.000', l:'2 logos'}, {v:6, p:'$20.000', l:'2 logos'}
                 ];
                 modelos.forEach(m => {
                     document.write(`
-                        <div class="item">
-                            <div class="tag-v">${m.v}</div>
-                            <div class="tag-price">${m.price}</div>
-                            <div class="tag-logo">${m.logo}</div>
-                            <img src="estilo${m.v}.jpg" onerror="this.src='placeholder.jpg'">
+                        <div class="item opaco">
+                            <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
+                            <div class="label">V${m.v}</div><div class="price">${m.p}</div><div class="info-tag">${m.l}</div>
+                            <img src="estilo${m.v}_1.jpg.jpeg">
                         </div>
                     `);
                 });
             </script>
-        </div>
-    </section>
-
-    <!-- Stock -->
-    <section id="stock" class="page page-list">
-        <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="grid">
-            <div class="item" onclick="abrirSwiper(['portada.jpg'])">
-                <div class="tag-v">V7</div><div class="tag-price">$12.000</div><div class="tag-logo">Sin logo</div>
-            </div>
         </div>
     </section>
 
@@ -100,13 +108,11 @@
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
         }
-        let swiperInstance;
         function abrirSwiper(imgs) {
             const container = document.getElementById('slider-content');
-            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><img src="${i}"></div>`).join('');
+            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}"></div></div>`).join('');
             irA('detalle');
-            if(swiperInstance) swiperInstance.destroy();
-            swiperInstance = new Swiper('.swiper', { pagination: { el: '.swiper-pagination', clickable: true } });
+            new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } });
         }
     </script>
 </body>
