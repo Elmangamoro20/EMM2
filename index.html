@@ -10,37 +10,31 @@
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         
-        /* Fondo Animado */
-        .fondo-animado { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
-        .remera-flotante { position: absolute; width: 150px; opacity: 0.4; pointer-events: none; animation: subir 20s linear infinite; }
-        @keyframes subir { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-20vh) rotate(360deg); } }
-
-        /* UI General */
+        /* UI Inicio */
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
         .descripcion { max-width: 400px; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.5; color: #ccc; }
         .btn-container { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
-        .btn { background: #fff; color: #000; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .row-group { display: flex; gap: 10px; align-items: center; }
+        .btn { flex-grow: 1; background: #fff; color: #000; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
         .btn-outline { background: transparent; color: #fff; border: 1px solid #fff; }
+        .btn-info { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-weight: bold; flex-shrink: 0; }
         
-        /* Secciones Listado */
+        /* Grids */
         .page-list { overflow-y: auto; display: none; padding-top: 60px; }
         .grid { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         
-        /* Items y Estilos Oscurecidos */
+        /* Items */
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
-        .item img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; } /* Estilo oscuro */
+        .item img { width: 100%; height: 100%; object-fit: contain; }
+        .opaco img { opacity: 0.3; } /* Solo para modelos bloqueados */
         .label, .price, .info { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
         .label { top: 10px; } .price { top: 45px; } .info { top: 80px; font-size: 12px; }
         
-        /* Cartel No Disponible */
         .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
         .modal-box { padding: 15px; border: 1px solid #fff; border-radius: 10px; background: #000; font-size: 12px; text-align: center; }
-
-        /* Swiper y Volver */
         .swiper { width: 100vw; height: 100vh; }
-        .swiper-pagination-bullet { background: #fff !important; width: 12px !important; height: 12px !important; }
         .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border: 1px solid #fff; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
@@ -49,10 +43,9 @@
         <h1>EMM2</h1>
         <p class="descripcion">Remeras 100% algodón, calidad premium en peinado 24.1. Talle M.</p>
         <div class="btn-container">
-            <button class="btn" onclick="irA('catalogo')">VER MODELOS</button>
-            <button class="btn btn-outline" onclick="irA('stock')">REMERA</button>
+            <div class="row-group"><button class="btn" onclick="irA('catalogo')">MODELOS</button><button class="btn-info" onclick="irA('info-page')">?</button></div>
+            <div class="row-group"><button class="btn btn-outline" onclick="irA('stock')">REMERA</button><button class="btn-info" onclick="alert('Remera básica sin logo ni etiquetas.')">?</button></div>
             <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
-            <button class="btn btn-outline" onclick="irA('info-page')">INFO</button>
         </div>
     </section>
 
@@ -69,7 +62,7 @@
         <div class="grid">
             <div class="item" onclick="abrirSwiper([{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
                 <div class="label">V7</div><div class="price">$12.000</div><div class="info">sin logo</div>
-                <img src="frente_real.jpg">
+                <img src="portada_v7.jpg.jpeg"> <!-- Foto de portada para la V7 -->
             </div>
         </div>
     </section>
@@ -78,10 +71,9 @@
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid">
             <script>
-                const modelos = [1,2,3,4,5,6];
-                modelos.forEach(i => {
+                [1,2,3,4,5,6].forEach(i => {
                     document.write(`
-                        <div class="item">
+                        <div class="item opaco">
                             <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
                             <div class="label">V${i}</div><div class="price">$15.000</div><div class="info">Logo</div>
                             <img src="estilo${i}_1.jpg.jpeg">
