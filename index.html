@@ -25,16 +25,19 @@
         .grid { display: grid; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px; grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         
-        /* Items */
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
         .item img { width: 100%; height: 100%; object-fit: contain; }
-        .opaco img { opacity: 0.3; } /* Solo para modelos bloqueados */
+        .opaco img { opacity: 0.3; }
         .label, .price, .info { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
         .label { top: 10px; } .price { top: 45px; } .info { top: 80px; font-size: 12px; }
         
         .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
         .modal-box { padding: 15px; border: 1px solid #fff; border-radius: 10px; background: #000; font-size: 12px; text-align: center; }
+        
+        /* Swiper y Paginación */
         .swiper { width: 100vw; height: 100vh; }
+        .swiper-pagination-bullet { background: #fff !important; width: 12px !important; height: 12px !important; }
+        .swiper-pagination-bullet-active { opacity: 1 !important; transform: scale(1.3); }
         .volver { position: absolute; top: 20px; left: 20px; z-index: 1000; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px 20px; border: 1px solid #fff; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
@@ -44,7 +47,7 @@
         <p class="descripcion">Remeras 100% algodón, calidad premium en peinado 24.1. Talle M.</p>
         <div class="btn-container">
             <div class="row-group"><button class="btn" onclick="irA('catalogo')">MODELOS</button><button class="btn-info" onclick="irA('info-page')">?</button></div>
-            <div class="row-group"><button class="btn btn-outline" onclick="irA('stock')">REMERA</button><button class="btn-info" onclick="alert('Remera básica sin logo ni etiquetas.')">?</button></div>
+            <div class="row-group"><button class="btn btn-outline" onclick="irA('stock')">REMERA</button><button class="btn-info" onclick="alert('Esta remera es sin etiqueta ni logo.')">?</button></div>
             <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
         </div>
     </section>
@@ -60,9 +63,9 @@
     <section id="stock" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid">
-            <div class="item" onclick="abrirSwiper([{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
+            <div class="item" onclick="abrirSwiper([{img:'portada_v7.jpg.jpeg'},{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
                 <div class="label">V7</div><div class="price">$12.000</div><div class="info">sin logo</div>
-                <img src="portada_v7.jpg.jpeg"> <!-- Foto de portada para la V7 -->
+                <img src="portada_v7.jpg.jpeg">
             </div>
         </div>
     </section>
@@ -73,7 +76,7 @@
             <script>
                 [1,2,3,4,5,6].forEach(i => {
                     document.write(`
-                        <div class="item opaco">
+                        <div class="item opaco" onclick="document.getElementById('modal-no').style.display='flex'">
                             <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
                             <div class="label">V${i}</div><div class="price">$15.000</div><div class="info">Logo</div>
                             <img src="estilo${i}_1.jpg.jpeg">
@@ -89,9 +92,12 @@
         <div class="swiper"><div class="swiper-wrapper" id="slider-content"></div><div class="swiper-pagination"></div></div>
     </section>
 
+    <div id="modal-no" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;" onclick="this.style.display='none'">
+        <div class="modal-box" style="border: 2px solid #fff;">No disponible<br>por ahora</div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        let mySwiper;
         function irA(id) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block');
@@ -100,8 +106,11 @@
             const container = document.getElementById('slider-content');
             container.innerHTML = imagenes.map(img => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${img.img}"></div></div>`).join('');
             irA('detalle');
-            if(mySwiper) mySwiper.destroy();
-            mySwiper = new Swiper('.swiper', { zoom: true, pagination: { el: '.swiper-pagination', clickable: true } });
+            new Swiper('.swiper', { 
+                zoom: true, 
+                keyboard: { enabled: true, onlyInViewport: true }, 
+                pagination: { el: '.swiper-pagination', clickable: true } 
+            });
         }
     </script>
 </body>
