@@ -28,8 +28,8 @@
         .item { aspect-ratio: 3/4; border: 2px solid #fff; border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; background: #000; }
         .item img { width: 100%; height: 100%; object-fit: contain; }
         .opaco img { opacity: 0.3; }
-        .label, .price, .info { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 14px; }
-        .label { top: 10px; } .price { top: 45px; } .info { top: 80px; font-size: 12px; }
+        .label, .price, .info-tag { position: absolute; left: 10px; padding: 4px 12px; border: 1.5px solid #fff; border-radius: 6px; font-weight: bold; background: rgba(0,0,0,0.6); z-index: 10; font-size: 13px; }
+        .label { top: 10px; } .price { top: 45px; } .info-tag { top: 80px; }
         
         .overlay-no { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 20; }
         .modal-box { padding: 15px; border: 2px solid #fff; border-radius: 10px; background: #000; font-size: 14px; text-align: center; font-weight: bold; }
@@ -58,14 +58,16 @@
 
     <section id="info-remera" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
-        <div class="info-content"><h2>Remera</h2><p>Esta es la remera real en stock: es un producto básico, sin etiquetas ni logos estampados.</p></div>
+        <div class="info-content"><h2>Remera</h2><p>Esta es la remera real en stock: es un producto básico, <b>sin logo</b> y <b>sin etiqueta</b>.</p></div>
     </section>
 
     <section id="stock" class="page page-list">
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="grid">
             <div class="item" onclick="abrirSwiper([{img:'portada_v7.jpg.jpeg'},{img:'frente_real.jpg'},{img:'espalda_real.jpg'}])">
-                <div class="label">V7</div><div class="price">$12.000</div><div class="info">sin logo/etiqueta</div>
+                <div class="label">V7</div><div class="price">$12.000</div>
+                <div class="info-tag" style="top:80px">sin logo</div>
+                <div class="info-tag" style="top:115px">sin etiqueta</div>
                 <img src="portada_v7.jpg.jpeg">
             </div>
         </div>
@@ -79,7 +81,7 @@
                     document.write(`
                         <div class="item opaco">
                             <div class="overlay-no"><div class="modal-box">No disponible<br>por ahora</div></div>
-                            <div class="label">V${i}</div><div class="price">$15.000</div><div class="info">Logo</div>
+                            <div class="label">V${i}</div><div class="price">$15.000</div><div class="info-tag">Logo</div>
                             <img src="estilo${i}_1.jpg.jpeg">
                         </div>
                     `);
