@@ -26,7 +26,6 @@
         .btn-container { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
         .row-group { display: flex; gap: 10px; align-items: center; }
         
-        /* Botones principales en blanco como el original */
         .btn { flex-grow: 1; background: #f4f4f5; color: #09090b; padding: 16px; border: none; border-radius: 14px; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 20px rgba(255,255,255,0.08); }
         .btn:hover { background: #ffffff; transform: translateY(-2px); box-shadow: 0 6px 25px rgba(255,255,255,0.15); }
         .btn:active { transform: scale(0.98); }
@@ -72,7 +71,8 @@
 </head>
 <body>
 
-    <audio id="background-audio" loop>
+    <!-- Audio optimizado con preload="none" para que no bloquee la carga inicial del celular -->
+    <audio id="background-audio" preload="none" loop>
         <source src="musica.mp3" type="audio/mp3">
     </audio>
 
@@ -98,11 +98,12 @@
                 <button class="btn" onclick="irA('stock')">REMERA</button>
                 <button class="btn-info" onclick="irA('info-remera')">?</button>
             </div>
+            <!-- Se agregó loading="lazy" para descarga diferida -->
             <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
         </div>
         
         <a href="https://wa.me/5491162669735" class="wp-link" target="_blank">
-            <img src="whatsapp_icon.png" alt="WhatsApp Directo">
+            <img src="whatsapp_icon.png" alt="WhatsApp Directo" loading="lazy">
         </a>
     </section>
 
@@ -137,7 +138,7 @@
                 <div class="label">V9</div>
                 <div class="price">$14.000</div>
                 <div class="info-tag" style="top:86px">1 forma</div>
-                <img src="portada_v9.jpg.jpeg" alt="Remera V9 Tejido">
+                <img src="portada_v9.jpg.jpeg" alt="Remera V9 Tejido" loading="lazy">
             </div>
         </div>
     </section>
@@ -150,7 +151,7 @@
                 <div class="price">$12.000</div>
                 <div class="info-tag" style="top:86px">sin logo</div>
                 <div class="info-tag" style="top:122px">sin etiqueta</div>
-                <img src="portada_v7.jpg.jpeg" alt="Remera V7">
+                <img src="portada_v7.jpg.jpeg" alt="Remera V7" loading="lazy">
             </div>
         </div>
     </section>
@@ -174,7 +175,7 @@
                             <div class="label">V${m.v}</div>
                             <div class="price">${m.p}</div>
                             <div class="info-tag">${m.l}</div>
-                            <img src="estilo${m.v}_1.jpg.jpeg" alt="Modelo V${m.v}">
+                            <img src="estilo${m.v}_1.jpg.jpeg" alt="Modelo V${m.v}" loading="lazy">
                         </div>
                     `);
                 });
@@ -214,7 +215,7 @@
         let mySwiper; 
         function abrirSwiper(imgs) { 
             const container = document.getElementById('slider-content'); 
-            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}"></div></div>`).join(''); 
+            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}" loading="lazy"></div></div>`).join(''); 
             irA('detalle'); 
             if(mySwiper) mySwiper.destroy(); 
             mySwiper = new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } }); 
