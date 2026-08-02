@@ -177,7 +177,7 @@
                     <p id="game-msg">Sacale captura a esta pantalla para tu 50% off (7 remeras en total).</p>
                     <div class="verificacion-box" id="verificacion-texto">Cód: EMM2-XXXX - 00/00 00:00</div>
                     <div class="cupon-img-box" id="cupon-box">
-                        <img src="frente_real.jpg" alt="Cupón Descuento">
+                        <img src="frente_real.jpg" alt="Cupón Descuento" decoding="async" fetchpriority="high">
                     </div>
                     <button class="btn btn-gold" style="padding: 8px; font-size: 0.75rem;" onclick="iniciarMinijuego()">Jugar de nuevo</button>
                 </div>
@@ -193,7 +193,7 @@
                 <div class="label">V9</div>
                 <div class="price">$14.000</div>
                 <div class="info-tag" style="top:86px">1 forma</div>
-                <img src="portada_v9.jpg.jpeg" alt="Remera V9 Tejido" loading="lazy">
+                <img src="portada_v9.jpg.jpeg" alt="Remera V9 Tejido" loading="eager" fetchpriority="high" decoding="async">
             </div>
         </div>
     </section>
@@ -206,7 +206,7 @@
                 <div class="price">$12.000</div>
                 <div class="info-tag" style="top:86px">sin logo</div>
                 <div class="info-tag" style="top:122px">sin etiqueta</div>
-                <img src="portada_v7.jpg.jpeg" alt="Remera V7" loading="lazy">
+                <img src="portada_v7.jpg.jpeg" alt="Remera V7" loading="eager" fetchpriority="high" decoding="async">
             </div>
         </div>
     </section>
@@ -230,7 +230,7 @@
                             <div class="label">V${m.v}</div>
                             <div class="price">${m.p}</div>
                             <div class="info-tag">${m.l}</div>
-                            <img src="estilo${m.v}_1.jpg.jpeg" alt="Modelo V${m.v}" loading="lazy">
+                            <img src="estilo${m.v}_1.jpg.jpeg" alt="Modelo V${m.v}" loading="lazy" decoding="async">
                         </div>
                     `);
                 });
@@ -250,6 +250,13 @@
     <script>
         const audio = document.getElementById('background-audio');
         const musicBtn = document.getElementById('music-btn');
+
+        // Precarga anticipada absoluta de imágenes críticas para máxima velocidad
+        const criticalImages = ['portada_v7.jpg.jpeg', 'portada_v9.jpg.jpeg', 'frente_real.jpg', 'espalda_real.jpg', 'talle_m.jpg.jpeg'];
+        criticalImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
 
         // Manejo del historial del navegador para botones de atrás de iPhone y Android
         window.history.replaceState({ page: 'inicio' }, '', '');
@@ -305,7 +312,7 @@
         let mySwiper; 
         function abrirSwiper(imgs) { 
             const container = document.getElementById('slider-content'); 
-            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}" loading="lazy"></div></div>`).join(''); 
+            container.innerHTML = imgs.map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="${i.img}" loading="eager" fetchpriority="high" decoding="async"></div></div>`).join(''); 
             irA('detalle'); 
             if(mySwiper) mySwiper.destroy(); 
             mySwiper = new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } }); 
@@ -332,11 +339,9 @@
             let startX, startY;
 
             if (isTopSurfaceHeavy) {
-                // Sale distribuido uniformemente POR TODA LA SUPERFICIE DE ARRIBA del botón
                 startX = rect.left + Math.random() * rect.width;
-                startY = rect.top + (Math.random() * 4 - 2); // Justo sobre la línea superior exacta
+                startY = rect.top + (Math.random() * 4 - 2);
             } else {
-                // Distribución normal superior/lateral para otros botones
                 let side = Math.random();
                 if (side < 0.5) {
                     startX = rect.left + Math.random() * rect.width;
@@ -353,10 +358,10 @@
             return {
                 x: startX,
                 y: startY,
-                radius: Math.random() * 25 + 18, // Partículas suaves y homogéneas tipo humo
+                radius: Math.random() * 25 + 18,
                 maxRadius: Math.random() * 45 + 35,
                 vx: (Math.random() - 0.5) * 0.15,
-                vy: -Math.random() * 0.7 - 0.25, // Sube suavemente
+                vy: -Math.random() * 0.7 - 0.25,
                 alpha: 0,
                 maxAlpha: Math.random() * 0.03 + maxAlphaVal,
                 fadeSpeed: Math.random() * 0.008 + 0.005,
@@ -394,11 +399,9 @@
                         let isWhiteBtn = b.classList.contains('btn') && !b.classList.contains('btn-gold');
                         let isLastWhiteBtn = isWhiteBtn && (index === buttons.length - 2 || b.textContent.includes('TALLE M'));
                         
-                        // Frecuencia mayor para los botones blancos y sobre todo el último ("TALLE M")
                         let spawnRate = isLastWhiteBtn ? 0.35 : (isWhiteBtn ? 0.22 : 0.12);
                         
                         if (Math.random() < spawnRate) {
-                            // Salen cubriendo toda la superficie de arriba del botón de manera uniforme
                             let p = createSmokeParticleForElement(b, '244, 244, 245', isLastWhiteBtn ? 0.14 : 0.08, true);
                             if(p) smokeParticles.push(p);
                         }
@@ -646,8 +649,9 @@
                 if (diffX > 25 && !goingLeft) { dx = 1; dy = 0; changingDirection = true; }
                 else if (diffX < -25 && !goingRight) { dx = -1; dy = 0; changingDirection = true; }
             } else {
-                if (diffY > 25 && !goingUp) { dx = 0; dy = 1; changingDirection = true; }
-                else if (diffY < -25 && !goingDown) { dx = 0; dy = 1; changingDirection = true; }
+                // Invertido: deslizar hacia arriba (diffY < -25) hace que la serpiente vaya hacia arriba (dy = -1)
+                if (diffY < -25 && !goingDown) { dx = 0; dy = -1; changingDirection = true; }
+                else if (diffY > 25 && !goingUp) { dx = 0; dy = 1; changingDirection = true; }
             }
         }, { passive: false });
     </script>
