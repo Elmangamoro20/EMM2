@@ -259,8 +259,16 @@
                 document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
                 document.getElementById(event.state.page).style.display = (event.state.page === 'inicio' ? 'flex' : 'block');
                 if(event.state.page === 'juego-seccion') detenerJuego();
+                
+                // Controlar efecto de aura según si está en inicio o no
+                if (event.state.page === 'inicio' && !audio.paused) {
+                    startSmoke();
+                } else {
+                    stopSmoke();
+                }
             } else {
                 irA('inicio', false);
+                if (!audio.paused) startSmoke();
             }
         });
 
@@ -281,6 +289,14 @@
         function irA(id, pushHistory = true) { 
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block'); 
+            
+            // Solo activar aura si estamos exactamente en la pantalla de inicio y la música suena
+            if (id === 'inicio' && !audio.paused) {
+                startSmoke();
+            } else {
+                stopSmoke();
+            }
+
             if (pushHistory) {
                 window.history.pushState({ page: id }, '', '');
             }
@@ -295,7 +311,7 @@
             mySwiper = new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } }); 
         }
 
-        // --- SISTEMA DE AURA SUTIL DETRÁS DE LOS BOTONES ---
+        // --- SISTEMA DE AURA UNIFORME TIPO HUMO SOBRE LA SUPERFICIE DE ARRIBA ---
         const smokeCanvas = document.getElementById('smoke-canvas');
         const smokeCtx = smokeCanvas.getContext('2d');
         let smokeParticles = [];
@@ -309,72 +325,47 @@
         window.addEventListener('resize', resizeSmokeCanvas);
         resizeSmokeCanvas();
 
-        function getElementBox(selector) {
-            const el = document.querySelector(selector);
-            if (!el) return { x: window.innerWidth / 2, y: window.innerHeight / 2, width: 100, height: 40 };
+        function createSmokeParticleForElement(el, color, maxAlphaVal, isTopSurfaceHeavy = false) {
+            if (!el) return null;
             const rect = el.getBoundingClientRect();
-            return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
-        }
-
-        function createSmokeParticle(sourceType) {
-            let box = { x: window.innerWidth / 2 - 100, y: window.innerHeight / 2 - 20, width: 200, height: 40 };
-            let color = '255, 255, 255';
-            let maxAlphaVal = 0.12;
-            let isUniformArc = false;
-
-            if (sourceType === 'music') {
-                const btnEl = document.querySelector('#music-btn');
-                const r = btnEl.getBoundingClientRect();
-                box = { x: r.left, y: r.top, width: r.width, height: r.height };
-                color = '34, 197, 94'; // Verde música
-            } else if (sourceType === 'whatsapp') {
-                const btnEl = document.querySelector('#whatsapp-btn');
-                const r = btnEl.getBoundingClientRect();
-                box = { x: r.left, y: r.top, width: r.width, height: r.height };
-                color = '34, 197, 94'; // Verde WhatsApp
-            } else if (sourceType === 'btn-primary') {
-                box = getElementBox('.btn-container');
-                color = '244, 244, 245'; // Blanco botones
-            } else if (sourceType === 'gold') {
-                const btnEl = document.querySelector('.btn-gold');
-                const r = btnEl.getBoundingClientRect();
-                box = { x: r.left, y: r.top, width: r.width, height: r.height };
-                color = '250, 204, 21'; // Dorado más notorio y uniforme
-                maxAlphaVal = 0.22; // Un poco más intenso / notorio
-                isUniformArc = true; // Aura más uniforme que redondea el botón
-            }
-
+            
             let startX, startY;
-            if (isUniformArc) {
-                // Generar de manera más uniforme bordeando la parte inferior y laterales del botón para redondearlo
-                const angle = Math.random() * Math.PI; // Mitad inferior del círculo o arco completo
-                const radiusX = box.width / 2 + 4;
-                const radiusY = box.height / 2 + 4;
-                const centerX = box.x + box.width / 2;
-                const centerY = box.y + box.height / 2;
-                startX = centerX + Math.cos(angle) * radiusX;
-                startY = centerY + Math.sin(angle) * radiusY + (box.height / 2);
+
+            if (isTopSurfaceHeavy) {
+                // Sale distribuido uniformemente POR TODA LA SUPERFICIE DE ARRIBA del botón
+                startX = rect.left + Math.random() * rect.width;
+                startY = rect.top + (Math.random() * 4 - 2); // Justo sobre la línea superior exacta
             } else {
-                startX = box.x + Math.random() * box.width;
-                startY = box.y + box.height;
+                // Distribución normal superior/lateral para otros botones
+                let side = Math.random();
+                if (side < 0.5) {
+                    startX = rect.left + Math.random() * rect.width;
+                    startY = rect.top;
+                } else if (side < 0.75) {
+                    startX = rect.left;
+                    startY = rect.top + Math.random() * rect.height;
+                } else {
+                    startX = rect.right;
+                    startY = rect.top + Math.random() * rect.height;
+                }
             }
 
             return {
                 x: startX,
                 y: startY,
-                radius: Math.random() * 12 + 8,
-                maxRadius: Math.random() * 18 + 15,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: -Math.random() * 1.2 - 0.6,
+                radius: Math.random() * 25 + 18, // Partículas suaves y homogéneas tipo humo
+                maxRadius: Math.random() * 45 + 35,
+                vx: (Math.random() - 0.5) * 0.15,
+                vy: -Math.random() * 0.7 - 0.25, // Sube suavemente
                 alpha: 0,
-                maxAlpha: Math.random() * 0.08 + maxAlphaVal,
-                fadeSpeed: Math.random() * 0.02 + 0.015,
-                growth: Math.random() * 0.3 + 0.1,
+                maxAlpha: Math.random() * 0.03 + maxAlphaVal,
+                fadeSpeed: Math.random() * 0.008 + 0.005,
+                growth: Math.random() * 0.25 + 0.1,
                 color: color,
-                wobbleSpeed: Math.random() * 0.04 + 0.01,
-                wobbleDistance: Math.random() * 8 + 2,
+                wobbleSpeed: Math.random() * 0.02 + 0.008,
+                wobbleDistance: Math.random() * 6 + 3,
                 initialX: startX,
-                targetY: box.y - (Math.random() * 20 + 5) 
+                targetY: rect.top - (Math.random() * 35 + 15)
             };
         }
 
@@ -383,23 +374,46 @@
             isSmokeActive = true;
             smokeParticles = [];
 
-            // Arranque rápido inmediato
-            for(let i = 0; i < 10; i++) {
-                let p = createSmokeParticle('music');
-                p.y -= i * 6;
-                p.alpha = Math.random() * 0.08;
-                smokeParticles.push(p);
-            }
-
             function updateAndRenderSmoke() {
                 if (!isSmokeActive) return;
                 smokeCtx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
 
-                // Generación continua no sincronizada por cada botón (incluyendo WhatsApp)
-                if (Math.random() < 0.35) smokeParticles.push(createSmokeParticle('music'));
-                if (Math.random() < 0.35) smokeParticles.push(createSmokeParticle('whatsapp'));
-                if (Math.random() < 0.3) smokeParticles.push(createSmokeParticle('btn-primary'));
-                if (Math.random() < 0.3) smokeParticles.push(createSmokeParticle('gold'));
+                const musicEl = document.querySelector('#music-btn');
+                const btnContainerEl = document.querySelector('.btn-container');
+                const goldEl = document.querySelector('.btn-gold');
+                const wpEl = document.querySelector('#whatsapp-btn');
+
+                if (musicEl && Math.random() < 0.2) {
+                    let p = createSmokeParticleForElement(musicEl, '34, 197, 94', 0.08);
+                    if(p) smokeParticles.push(p);
+                }
+                
+                if (btnContainerEl) {
+                    const buttons = btnContainerEl.querySelectorAll('.btn, .btn-outline, .btn-info');
+                    buttons.forEach((b, index) => {
+                        let isWhiteBtn = b.classList.contains('btn') && !b.classList.contains('btn-gold');
+                        let isLastWhiteBtn = isWhiteBtn && (index === buttons.length - 2 || b.textContent.includes('TALLE M'));
+                        
+                        // Frecuencia mayor para los botones blancos y sobre todo el último ("TALLE M")
+                        let spawnRate = isLastWhiteBtn ? 0.35 : (isWhiteBtn ? 0.22 : 0.12);
+                        
+                        if (Math.random() < spawnRate) {
+                            // Salen cubriendo toda la superficie de arriba del botón de manera uniforme
+                            let p = createSmokeParticleForElement(b, '244, 244, 245', isLastWhiteBtn ? 0.14 : 0.08, true);
+                            if(p) smokeParticles.push(p);
+                        }
+                    });
+                }
+
+                if (goldEl && Math.random() < 0.25) {
+                    let p = createSmokeParticleForElement(goldEl, '250, 204, 21', 0.12, true);
+                    if(p) smokeParticles.push(p);
+                }
+
+                if (wpEl && Math.random() < 0.25) {
+                    let p = createSmokeParticleForElement(wpEl, '34, 197, 94', 0.1);
+                    if(p) smokeParticles.push(p);
+                }
 
                 for (let i = smokeParticles.length - 1; i >= 0; i--) {
                     let p = smokeParticles[i];
@@ -422,6 +436,7 @@
                     smokeCtx.beginPath();
                     let grad = smokeCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
                     grad.addColorStop(0, `rgba(${p.color}, ${p.alpha})`);
+                    grad.addColorStop(0.5, `rgba(${p.color}, ${p.alpha * 0.5})`);
                     grad.addColorStop(1, `rgba(${p.color}, 0)`);
                     smokeCtx.fillStyle = grad;
                     smokeCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
