@@ -13,9 +13,6 @@
         #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center; background: radial-gradient(circle at center, #18181b 0%, #0b0b0c 100%); }
 
         .music-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 18px; cursor: pointer; }
-        .music-guide-text { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #a1a1aa; margin-bottom: 6px; font-weight: 700; transition: color 0.2s; }
-        .music-wrapper:hover .music-guide-text { color: #22c55e; }
-
         .btn-music { background: #000000; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 20px rgba(34,197,94,0.4); transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .music-wrapper:hover .btn-music { transform: scale(1.1); box-shadow: 0 0 28px rgba(34,197,94,0.7); border-color: #22c55e; }
         .btn-music.paused { opacity: 0.6; }
@@ -71,14 +68,12 @@
 </head>
 <body>
 
-    <!-- Audio optimizado con preload="none" para que no bloquee la carga inicial del celular -->
     <audio id="background-audio" preload="none" loop>
         <source src="musica.mp3" type="audio/mp3">
     </audio>
 
     <section id="inicio" class="page" style="display: flex;">
         <div class="music-wrapper" onclick="toggleMusic()">
-            <span class="music-guide-text">Para que no te aburras eligiendo</span>
             <button class="btn-music paused" id="music-btn">🎵</button>
         </div>
 
@@ -98,7 +93,6 @@
                 <button class="btn" onclick="irA('stock')">REMERA</button>
                 <button class="btn-info" onclick="irA('info-remera')">?</button>
             </div>
-            <!-- Se agregó loading="lazy" para descarga diferida -->
             <button class="btn btn-outline" onclick="abrirSwiper([{img:'talle_m.jpg.jpeg'}])">TALLE M</button>
         </div>
         
