@@ -10,7 +10,13 @@
         body { background-color: #0b0b0c; color: #f4f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; }
         .page { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; display: none; }
         
-        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center; background: radial-gradient(circle at center, #18181b 0%, #0b0b0c 100%); overflow-y: auto; }
+        #inicio { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center; background: radial-gradient(circle at center, #18181b 0%, #0b0b0c 100%); overflow-y: auto; position: relative; z-index: 1; }
+
+        /* Lienzo de aura para la pantalla de inicio */
+        #smoke-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+        
+        /* Asegurar que los elementos interactivos estén por delante del aura y dejen pasar el efecto por detrás */
+        .music-wrapper, h1, .descripcion, .btn-container, .wp-link { position: relative; z-index: 2; }
 
         .music-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 18px; cursor: pointer; }
         .btn-music { background: #000000; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 20px rgba(34,197,94,0.4); transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -94,6 +100,8 @@
     </audio>
 
     <section id="inicio" class="page" style="display: flex;">
+        <canvas id="smoke-canvas"></canvas>
+
         <div class="music-wrapper" onclick="toggleMusic()">
             <button class="btn-music paused" id="music-btn">🎵</button>
         </div>
@@ -122,7 +130,7 @@
             </div>
         </div>
         
-        <a href="https://wa.me/5491162669735" class="wp-link" target="_blank">
+        <a href="https://wa.me/5491162669735" class="wp-link" target="_blank" id="whatsapp-btn">
             <img src="whatsapp_icon.png" alt="WhatsApp Directo" loading="lazy">
         </a>
     </section>
@@ -147,7 +155,7 @@
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="info-content">
             <h2>Remera</h2>
-            <p>Esta es la remera física disponible en stock inmediato: confección textil de grado superior, <b>sin logo</b> y <b>sin etiqueta</b>.</p>
+            <p>Esta es la remera física disponible en stock inmediato: confección textil de grado superior, <b>sin logo</b> y <b>without etiqueta</b>.</p>
         </div>
     </section>
 
@@ -155,7 +163,7 @@
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="info-content">
             <h2>Juego Especial</h2>
-            <p>Llená todo el mapa completando el minijuego para desbloquear una imagen exclusiva en pantalla con un <b>código único de verificación y fecha</b>. <b>Sacale captura de pantalla</b> para poder canjearla y obtener un <b>50% de descuento exclusivamente en la séptima remera</b>, válido comprando un total de 7 remeras.</p>
+            <p>Llená todo el mapa completando el minijuego. Al ganarlo se revelará un código secreto y fecha única de forma automática para que no puedan hacer trampa. <b>Sacale captura de pantalla</b> para poder canjearla y obtener un <b>50% de descuento exclusivamente en la séptima remera</b>, válido comprando un total de 7 remeras.</p>
         </div>
     </section>
 
@@ -243,22 +251,41 @@
         const audio = document.getElementById('background-audio');
         const musicBtn = document.getElementById('music-btn');
 
+        // Manejo del historial del navegador para botones de atrás de iPhone y Android
+        window.history.replaceState({ page: 'inicio' }, '', '');
+
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.page) {
+                document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+                document.getElementById(event.state.page).style.display = (event.state.page === 'inicio' ? 'flex' : 'block');
+                if(event.state.page === 'juego-seccion') detenerJuego();
+            } else {
+                irA('inicio', false);
+            }
+        });
+
         function toggleMusic() {
             if (audio.paused) {
                 audio.play();
                 musicBtn.classList.remove('paused');
                 musicBtn.style.borderColor = '#22c55e';
+                startSmoke();
             } else {
                 audio.pause();
                 musicBtn.classList.add('paused');
                 musicBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+                stopSmoke();
             }
         }
 
-        function irA(id) { 
+        function irA(id, pushHistory = true) { 
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
             document.getElementById(id).style.display = (id === 'inicio' ? 'flex' : 'block'); 
+            if (pushHistory) {
+                window.history.pushState({ page: id }, '', '');
+            }
         }
+
         let mySwiper; 
         function abrirSwiper(imgs) { 
             const container = document.getElementById('slider-content'); 
@@ -266,6 +293,152 @@
             irA('detalle'); 
             if(mySwiper) mySwiper.destroy(); 
             mySwiper = new Swiper('.swiper', { zoom: true, keyboard: true, pagination: { el: '.swiper-pagination', clickable: true } }); 
+        }
+
+        // --- SISTEMA DE AURA SUTIL DETRÁS DE LOS BOTONES ---
+        const smokeCanvas = document.getElementById('smoke-canvas');
+        const smokeCtx = smokeCanvas.getContext('2d');
+        let smokeParticles = [];
+        let smokeAnimId = null;
+        let isSmokeActive = false;
+
+        function resizeSmokeCanvas() {
+            smokeCanvas.width = window.innerWidth;
+            smokeCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeSmokeCanvas);
+        resizeSmokeCanvas();
+
+        function getElementBox(selector) {
+            const el = document.querySelector(selector);
+            if (!el) return { x: window.innerWidth / 2, y: window.innerHeight / 2, width: 100, height: 40 };
+            const rect = el.getBoundingClientRect();
+            return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+        }
+
+        function createSmokeParticle(sourceType) {
+            let box = { x: window.innerWidth / 2 - 100, y: window.innerHeight / 2 - 20, width: 200, height: 40 };
+            let color = '255, 255, 255';
+            let maxAlphaVal = 0.12;
+            let isUniformArc = false;
+
+            if (sourceType === 'music') {
+                const btnEl = document.querySelector('#music-btn');
+                const r = btnEl.getBoundingClientRect();
+                box = { x: r.left, y: r.top, width: r.width, height: r.height };
+                color = '34, 197, 94'; // Verde música
+            } else if (sourceType === 'whatsapp') {
+                const btnEl = document.querySelector('#whatsapp-btn');
+                const r = btnEl.getBoundingClientRect();
+                box = { x: r.left, y: r.top, width: r.width, height: r.height };
+                color = '34, 197, 94'; // Verde WhatsApp
+            } else if (sourceType === 'btn-primary') {
+                box = getElementBox('.btn-container');
+                color = '244, 244, 245'; // Blanco botones
+            } else if (sourceType === 'gold') {
+                const btnEl = document.querySelector('.btn-gold');
+                const r = btnEl.getBoundingClientRect();
+                box = { x: r.left, y: r.top, width: r.width, height: r.height };
+                color = '250, 204, 21'; // Dorado más notorio y uniforme
+                maxAlphaVal = 0.22; // Un poco más intenso / notorio
+                isUniformArc = true; // Aura más uniforme que redondea el botón
+            }
+
+            let startX, startY;
+            if (isUniformArc) {
+                // Generar de manera más uniforme bordeando la parte inferior y laterales del botón para redondearlo
+                const angle = Math.random() * Math.PI; // Mitad inferior del círculo o arco completo
+                const radiusX = box.width / 2 + 4;
+                const radiusY = box.height / 2 + 4;
+                const centerX = box.x + box.width / 2;
+                const centerY = box.y + box.height / 2;
+                startX = centerX + Math.cos(angle) * radiusX;
+                startY = centerY + Math.sin(angle) * radiusY + (box.height / 2);
+            } else {
+                startX = box.x + Math.random() * box.width;
+                startY = box.y + box.height;
+            }
+
+            return {
+                x: startX,
+                y: startY,
+                radius: Math.random() * 12 + 8,
+                maxRadius: Math.random() * 18 + 15,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: -Math.random() * 1.2 - 0.6,
+                alpha: 0,
+                maxAlpha: Math.random() * 0.08 + maxAlphaVal,
+                fadeSpeed: Math.random() * 0.02 + 0.015,
+                growth: Math.random() * 0.3 + 0.1,
+                color: color,
+                wobbleSpeed: Math.random() * 0.04 + 0.01,
+                wobbleDistance: Math.random() * 8 + 2,
+                initialX: startX,
+                targetY: box.y - (Math.random() * 20 + 5) 
+            };
+        }
+
+        function startSmoke() {
+            if (isSmokeActive) return;
+            isSmokeActive = true;
+            smokeParticles = [];
+
+            // Arranque rápido inmediato
+            for(let i = 0; i < 10; i++) {
+                let p = createSmokeParticle('music');
+                p.y -= i * 6;
+                p.alpha = Math.random() * 0.08;
+                smokeParticles.push(p);
+            }
+
+            function updateAndRenderSmoke() {
+                if (!isSmokeActive) return;
+                smokeCtx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
+
+                // Generación continua no sincronizada por cada botón (incluyendo WhatsApp)
+                if (Math.random() < 0.35) smokeParticles.push(createSmokeParticle('music'));
+                if (Math.random() < 0.35) smokeParticles.push(createSmokeParticle('whatsapp'));
+                if (Math.random() < 0.3) smokeParticles.push(createSmokeParticle('btn-primary'));
+                if (Math.random() < 0.3) smokeParticles.push(createSmokeParticle('gold'));
+
+                for (let i = smokeParticles.length - 1; i >= 0; i--) {
+                    let p = smokeParticles[i];
+                    p.y += p.vy;
+                    p.x = p.initialX + Math.sin(p.y * p.wobbleSpeed) * p.wobbleDistance;
+                    p.radius += p.growth;
+
+                    if (p.y <= p.targetY || p.alpha >= p.maxAlpha) {
+                        p.alpha -= p.fadeSpeed;
+                    } else if (p.alpha < p.maxAlpha) {
+                        p.alpha += p.fadeSpeed;
+                    }
+
+                    if (p.alpha <= 0) {
+                        smokeParticles.splice(i, 1);
+                        continue;
+                    }
+
+                    smokeCtx.save();
+                    smokeCtx.beginPath();
+                    let grad = smokeCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                    grad.addColorStop(0, `rgba(${p.color}, ${p.alpha})`);
+                    grad.addColorStop(1, `rgba(${p.color}, 0)`);
+                    smokeCtx.fillStyle = grad;
+                    smokeCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    smokeCtx.fill();
+                    smokeCtx.restore();
+                }
+
+                smokeAnimId = requestAnimationFrame(updateAndRenderSmoke);
+            }
+            updateAndRenderSmoke();
+        }
+
+        function stopSmoke() {
+            isSmokeActive = false;
+            if (smokeAnimId) cancelAnimationFrame(smokeAnimId);
+            smokeCtx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
+            smokeParticles = [];
         }
 
         // --- MINIJUEGO ---
@@ -332,7 +505,6 @@
                 gameTitle.innerText = "¡LO LOGRASTE!";
                 gameMsg.innerText = "Sacale captura a esta pantalla para tu 50% off (7 remeras en total).";
                 
-                // Generar código aleatorio de verificación y fecha actual
                 const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
                 const now = new Date();
                 const dia = String(now.getDate()).padStart(2, '0');
@@ -460,7 +632,7 @@
                 else if (diffX < -25 && !goingRight) { dx = -1; dy = 0; changingDirection = true; }
             } else {
                 if (diffY > 25 && !goingUp) { dx = 0; dy = 1; changingDirection = true; }
-                else if (diffY < -25 && !goingDown) { dx = 0; dy = -1; changingDirection = true; }
+                else if (diffY < -25 && !goingDown) { dx = 0; dy = 1; changingDirection = true; }
             }
         }, { passive: false });
     </script>
