@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EMM2 | Indumentaria Premium</title>
+    <title>EMM2.com</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -155,7 +155,7 @@
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="info-content">
             <h2>Remera</h2>
-            <p>Esta es la remera física disponible en stock inmediato: confección textil de grado superior, <b>sin logo</b> y <b>without etiqueta</b>.</p>
+            <p>Esta es la remera física disponible en stock inmediato: confección textil de grado superior, <b>sin logo</b> y <b>sin etiqueta</b>.</p>
         </div>
     </section>
 
@@ -163,7 +163,7 @@
         <div class="volver" onclick="irA('inicio')">← Volver</div>
         <div class="info-content">
             <h2>Juego Especial</h2>
-            <p>Llená todo el mapa completando el minijuego. Al ganarlo se revelará un código secreto y fecha única de forma automática para que no puedan hacer trampa. <b>Sacale captura de pantalla</b> para poder canjearla y obtener un <b>50% de descuento exclusivamente en la séptima remera</b>, válido comprando un total de 7 remeras.</p>
+            <p>Llená todo el mapa completando el minijuego. Al ganarlo se revelará una <b>imagen secreta</b> de forma automática. <b>Sacale captura de pantalla</b> para poder canjearla y obtener un <b>50% de descuento exclusivamente en la séptima remera</b>, válido comprando un total de 7 remeras.</p>
         </div>
     </section>
 
@@ -175,7 +175,7 @@
                 <div id="game-over-screen">
                     <h2 id="game-title">¡LO LOGRASTE!</h2>
                     <p id="game-msg">Sacale captura a esta pantalla para tu 50% off (7 remeras en total).</p>
-                    <div class="verificacion-box" id="verificacion-texto">Cód: EMM2-XXXX - 00/00 00:00</div>
+                    <div class="verificacion-box" id="verificacion-texto" style="display:none;"></div>
                     <div class="cupon-img-box" id="cupon-box">
                         <img src="frente_real.jpg" alt="Cupón Descuento" decoding="async" fetchpriority="high">
                     </div>
@@ -523,15 +523,7 @@
                 gameTitle.innerText = "¡LO LOGRASTE!";
                 gameMsg.innerText = "Sacale captura a esta pantalla para tu 50% off (7 remeras en total).";
                 
-                const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-                const now = new Date();
-                const dia = String(now.getDate()).padStart(2, '0');
-                const mes = String(now.getMonth() + 1).padStart(2, '0');
-                const horas = String(now.getHours()).padStart(2, '0');
-                const minutos = String(now.getMinutes()).padStart(2, '0');
-                
-                verificacionTexto.innerText = `Cód: EMM2-${randomCode} | ${dia}/${mes} ${horas}:${minutos}`;
-                verificacionTexto.style.display = "block";
+                verificacionTexto.style.display = "none";
                 cuponBox.style.display = "block";
                 
                 gameOverScreen.style.display = "flex";
@@ -649,7 +641,6 @@
                 if (diffX > 25 && !goingLeft) { dx = 1; dy = 0; changingDirection = true; }
                 else if (diffX < -25 && !goingRight) { dx = -1; dy = 0; changingDirection = true; }
             } else {
-                // Invertido: deslizar hacia arriba (diffY < -25) hace que la serpiente vaya hacia arriba (dy = -1)
                 if (diffY < -25 && !goingDown) { dx = 0; dy = -1; changingDirection = true; }
                 else if (diffY > 25 && !goingUp) { dx = 0; dy = 1; changingDirection = true; }
             }
